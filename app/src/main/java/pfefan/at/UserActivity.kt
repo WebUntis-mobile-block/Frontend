@@ -22,10 +22,8 @@ class UserActivity : AppCompatActivity() {
 
         submitbtn.setOnClickListener {
             saveUsername(username_input.text.toString()) { response ->
-                println(response)
                 if (response != null && response != "An exeption has accured") {
                     sendblock() { response ->
-                        println(response)
                         if (response != null && response != "An exeption has accured") {
                             val responseJson = JSONObject(response)
                             val message = responseJson.getString("result")

@@ -39,7 +39,6 @@ class SchoolActivity : AppCompatActivity() {
             val selectedSchool = schoolList[position]
             saveSchool(selectedSchool) { response ->
                 if (response != null) {
-                    println(response)
                     val intent = Intent(this, UserActivity::class.java)
                     startActivity(intent)
                 }
