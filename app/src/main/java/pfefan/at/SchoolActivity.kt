@@ -1,22 +1,23 @@
 package pfefan.at
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.ListView
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.Request
-import android.content.Context
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.Request
 import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.material.snackbar.Snackbar
 import org.json.JSONObject
 
-
 class SchoolActivity : AppCompatActivity() {
+
     private lateinit var schoolListView: ListView
     private lateinit var schoolAdapter: ArrayAdapter<String>
     private lateinit var schoolList: MutableList<String>
@@ -25,33 +26,38 @@ class SchoolActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_school)
 
-        schoolListView = findViewById(R.id.schoolListView)
+        schoolListView = findViewById(R.id.school_listview)
         schoolList = mutableListOf()
         schoolAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, schoolList)
         schoolListView.adapter = schoolAdapter
 
-        val submitbtn = findViewById<Button>(R.id.submitschoolbtn)
-        val school_id_input = findViewById<EditText>(R.id.schoolIdInput)
+        val submitBtn = findViewById<Button>(R.id.submit_school_btn)
+        val schoolIdInput = findViewById<EditText>(R.id.school_id_input)
 
         getSchools()
 
         schoolListView.setOnItemClickListener { parent, view, position, id ->
             val selectedSchool = schoolList[position]
-            saveSchool(selectedSchool) { response ->
-                if (response != null) {
-                    val intent = Intent(this, UserActivity::class.java)
-                    startActivity(intent)
-                }
-            }
+            saveSchoolHandler(selectedSchool)
         }
 
-        submitbtn.setOnClickListener {
-            saveSchool(school_id_input.text.toString()) { response ->
-                if (response != null || response != "An exeption has accured") {
+        submitBtn.setOnClickListener {
+            val school = schoolIdInput.text.toString()
+            saveSchoolHandler(school)
+        }
+    }
+
+    private fun saveSchoolHandler(school: String) {
+        if (school.isNotEmpty()) {
+            saveSchool(school) { response ->
+                if (response != null && response != "An exeption has accured") {
                     val intent = Intent(this, UserActivity::class.java)
                     startActivity(intent)
                 }
             }
+        } else {
+            val message = "You need to enter a school ID"
+            Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -91,15 +97,15 @@ class SchoolActivity : AppCompatActivity() {
     }
 }
 
-class VolleySingleton constructor(context: Context) {
+class VolleySingleton private constructor(context: Context) {
+
     companion object {
         @Volatile
         private var INSTANCE: VolleySingleton? = null
+
         fun getInstance(context: Context) =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: VolleySingleton(context).also {
-                    INSTANCE = it
-                }
+                INSTANCE ?: VolleySingleton(context).also { INSTANCE = it }
             }
     }
 

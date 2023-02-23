@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/school_activity_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SchoolActivity">
 
     <TextView
-        android:id="@+id/selectSchoolTextView"
-        android:layout_width="wrap_content"
+        android:id="@+id/select_school_textview"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Select a school"
         android:textSize="18sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@android:color/black"
         android:paddingStart="16dp"
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="8dp"/>
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
-        android:id="@+id/schoolIdInput"
+        android:id="@+id/school_id_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -31,28 +34,30 @@
         android:inputType="text"
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/darker_gray"
-        app:layout_constraintEnd_toStartOf="@id/submitschoolbtn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/selectSchoolTextView" />
+        app:layout_constraintEnd_toStartOf="@id/submit_school_btn"
+        app:layout_constraintTop_toBottomOf="@id/select_school_textview" />
 
     <Button
-        android:id="@+id/submitschoolbtn"
-        android:textColor="@android:color/black"
-        android:backgroundTint="#FFA500"
+        android:id="@+id/submit_school_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
         android:text="Submit"
+        android:textColor="@android:color/black"
+        android:backgroundTint="#FFA500"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/selectSchoolTextView" />
+        app:layout_constraintTop_toBottomOf="@id/select_school_textview" />
 
     <ListView
-        android:id="@+id/schoolListView"
-        android:layout_width="match_parent"
+        android:id="@+id/school_listview"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/submitschoolbtn"
+        android:paddingStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/submit_school_btn"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingStart="16dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

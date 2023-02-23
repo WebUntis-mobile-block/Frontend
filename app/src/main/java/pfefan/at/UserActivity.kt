@@ -1,15 +1,18 @@
 package pfefan.at
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
+import com.google.android.material.snackbar.Snackbar
 import org.json.JSONObject
 
 class UserActivity : AppCompatActivity() {
@@ -21,19 +24,47 @@ class UserActivity : AppCompatActivity() {
         val username_input = findViewById<EditText>(R.id.usernameInput)
 
         submitbtn.setOnClickListener {
-            saveUsername(username_input.text.toString()) { response ->
-                if (response != null && response != "An exeption has accured") {
-                    sendblock() { response ->
-                        if (response != null && response != "An exeption has accured") {
-                            val responseJson = JSONObject(response)
-                            val message = responseJson.getString("result")
-                            val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
-                            toast.setGravity(Gravity.CENTER, 0, 0)
-                            toast.show()
+            // Hide the keyboard
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
+            val username = username_input.text.toString()
+
+            if (username.isNullOrBlank()) {
+                val message = "You need to enter a username"
+                val snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
+                snackbar.show()
+            } else {
+                saveUsername(username) { response ->
+                    if (response != null && response != "An exception has occurred") {
+                        sendblock() { response ->
+                            if (response != null && response != "An exception has occurred") {
+                                val responseJson = JSONObject(response)
+                                val message = responseJson.getString("result")
+                                val snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
+
+                                snackbar.addCallback(object : Snackbar.Callback() {
+                                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                        if (event != DISMISS_EVENT_ACTION) {
+                                            val intent = Intent(this@UserActivity, MainActivity::class.java)
+                                            startActivity(intent)
+                                        }
+                                    }
+                                })
+
+                                snackbar.show()
+                            } else {
+                                Log.e("UserActivity", "Error sending block: $response")
+                                val message = "An error occurred. Please try again later."
+                                val snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
+                                snackbar.show()
+                            }
                         }
+                    } else {
+                        Log.e("UserActivity", "Error saving username: $response")
+                        val message = "An error occurred. Please try again later."
+                        val snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
+                        snackbar.show()
                     }
                 }
             }
